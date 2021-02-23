@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js" integrity="sha384-LtrjvnR4Twt/qOuYxE721u19sVFLVSA4hf/rRt6PrZTmiPltdZcI7q7PXQBYTKyf" crossorigin="anonymous"></script>
+      <link rel="stylesheet" href="form-select.css">
+      <title>Tiempo</title>
+      <script>
+
+
+         async function obtenerTiempo(e){
+            if(!document.querySelectorAll('form')[0].checkValidity())return;
+            var pais = document.getElementById('pais').value;
+            var ciudad = document.getElementById('ciudad').value;
+            
+            try{
+              var respuesta = await fetch(`http://api.openweathermap.org/data/2.5/weather?units=metric&q=${ciudad + "," + pais}&APPID=9dbc5cee9e2a46c54e39331a072b0a58`);
+
+              var resultado = await respuesta.json();
+              console.log(resultado);
+
+              document.getElementById('datos').style.display = 'block';
+              document.getElementById('error').innerHTML = '';
+
+              document.getElementById('temp').innerHTML = Math.floor(resultado.main.temp);
+              document.getElementById('temp_min').innerHTML = Math.floor(resultado.main.temp_min);
+              document.getElementById('temp_max').innerHTML = Math.floor(resultado.main.temp_max);
+
+              document.getElementById('mostrar_ciudad').innerHTML = ciudad;
+            }catch(err){
+              document.getElementById('datos').style.display = 'none';
+              document.getElementById('error').innerHTML = 'No encontrado!';
+            }
+         }
+      </script>
+   </head>
+   <body>
+      <div class="container-fluid">
+      <nav class="navbar sticky-top flex-md-nowrap p-10 shadow">
+         <a class="col-md-3-col-lg-2 mr-0 px-3" href="a">
+         <img src="logoifp.png" height="100rem" class="mx-2">
+         </a>
+         <h1 class="navbar px-3" href="a">Dime el tiempo</h1>
+      </nav>
+      <div class="container">
+         <div class="col g-8 mt-5">
+            <form class="needs-validation" novalidate onsubmit="obtenerTiempo()">
+               <div class="row g-3">
+                  <div class="col-12">
+                     <div class="has-validation">
+                      <label for="nombre" class="form-label">Nombre</label>
+                      <input type="text" class="form-control" id="nombre" placeholder="" value="" required>
+                      <div class="invalid-feedback">Rellene el nombre</div>
+                    </div>
+                  </div>
+                  <div class="col-sm-6">
+                     <label for="ciudad" class="form-label">Ciudad</label>
+                     <input type="text" class="form-control" id="ciudad" placeholder="" value="" required>
+                  </div>
+                  <div class="col-sm-6 mb-3">
+                     <label for="pais" class="form-label">País</label>
+                     <select class="form-control from-select" id="pais" required>
+                        <option value="" class="form-label" >--Selecione--</option>
+                        <option value="es">España</option>
+                        <option value="en">Estados Unidos</option>
+                        <option value="fr">Francia</option>
+                        <option value="pt">Portugal</option>
+                        <option value="uk">Reino Unido</option>
+                     </select>
+                  </div>
+               </div>
+               <button type="submit" class="btn btn-light">Dime el tiempo</button>
+            </form>
+         </div>
+
+         <div id="datos" class="container border m-4 p-4"  style="display: none">
+            Tiempo en: <span id="mostrar_ciudad"></span>
+            <span id="temp"></span> °C
+            <br>
+            Max: <span id="temp_max"></span> °C
+            <br>
+            Min: <span id="temp_min"></span> °C
+         </div>
+         <div id="error"></div>
+      </div>
+
+
+      <script type="text/javascript" src="index.js"></script>
+
+   </body>
+</html>
